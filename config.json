@@ -1,0 +1,8 @@
+{
+  "LoginScreenHotkey": "Shift+F1",
+  "Hotkeys": {
+    "F1": [
+      "CharacterName"
+    ]
+  }
+}

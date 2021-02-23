@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace EveSwitcher
 {
-    class AppViewModel
+    public class AppViewModel
     {
         private ICommand _exitCommand;
         public ICommand ExitCommand
