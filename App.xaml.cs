@@ -31,7 +31,7 @@ namespace EveSwitcher
             _config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configFileName));
 
             _taskbarIcon = FindResource("TaskbarIcon") as TaskbarIcon;
-            _hotkeyHandler = new HotkeyHandler();
+            _hotkeyHandler = new HotkeyHandler(_config.RequireActiveEveClient);
 
             _hotkeyHandler.HotkeyPressed += HotkeyHandler_HotkeyPressed;
 

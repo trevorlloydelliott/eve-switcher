@@ -25,15 +25,21 @@ namespace EveSwitcher
         private static int _lastId = 0;
 
         private bool _disposed;
-        private Window _window;
-        private IntPtr _handle;
-        private HwndSource _hwndSource;
-        private List<RegisteredHotKey> _registeredHotkeys = new List<RegisteredHotKey>();
+        private readonly WindowHelper _windowHelper;
+        private readonly bool _requireActiveEveClient;
+        private readonly Window _window;
+        private readonly IntPtr _handle;
+        private readonly HwndSource _hwndSource;
+        private readonly List<RegisteredHotKey> _registeredHotkeys = new List<RegisteredHotKey>();
 
         public event HotkeyEventHandler HotkeyPressed;
 
-        public HotkeyHandler()
+        public HotkeyHandler(bool requireActiveEveClient)
         {
+            _requireActiveEveClient = requireActiveEveClient;
+
+            _windowHelper = new WindowHelper();
+
             // Force window creation to start a message queue, but hide it.
             _window = new Window
             {
@@ -114,9 +120,16 @@ namespace EveSwitcher
 
                 if (hotkey != null)
                 {
-                    var keyEventArgs = new HotkeyEventArgs(hotkey.Gesture);
-                    HotkeyPressed?.Invoke(this, keyEventArgs);
-                    handled = true;
+                    if (_requireActiveEveClient && !_windowHelper.IsEveClientActive())
+                    {
+                        handled = false;
+                    }
+                    else
+                    {
+                        var keyEventArgs = new HotkeyEventArgs(hotkey.Gesture);
+                        HotkeyPressed?.Invoke(this, keyEventArgs);
+                        handled = true;
+                    }
                 }
             }
 

@@ -11,9 +11,7 @@ namespace EveSwitcher
 
         public string GetActiveCharacter()
         {
-            var hwnd = ProcessNativeMethods.GetForegroundWindow();
-            ProcessNativeMethods.GetWindowThreadProcessId(hwnd, out uint processId);
-            var process = Process.GetProcessById((int)processId);
+            var process = GetActiveWindowProcess();
 
             var title = process.MainWindowTitle;
 
@@ -54,6 +52,19 @@ namespace EveSwitcher
         public void SetActiveLoginScreen(IntPtr hwnd)
         {
             ProcessNativeMethods.SetForegroundWindow(hwnd);
+        }
+
+        public bool IsEveClientActive()
+        {
+            var process = GetActiveWindowProcess();
+            return process.ProcessName == "exefile";
+        }
+
+        private Process GetActiveWindowProcess()
+        {
+            var hwnd = ProcessNativeMethods.GetForegroundWindow();
+            ProcessNativeMethods.GetWindowThreadProcessId(hwnd, out uint processId);
+            return Process.GetProcessById((int)processId);
         }
 
         private Process GetProcessForCharacter(string character)

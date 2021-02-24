@@ -1,4 +1,5 @@
 {
+  "RequireActiveEveClient": "false",
   "LoginScreenHotkey": "Shift+F1",
   "Hotkeys": {
     "F1": [
