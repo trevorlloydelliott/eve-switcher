@@ -1,4 +1,4 @@
-﻿using Hardcodet.Wpf.TaskbarNotification;
+using Hardcodet.Wpf.TaskbarNotification;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -51,7 +51,7 @@ namespace EveSwitcher
 
             if (hotkey == _config.LoginScreenHotkey)
             {
-                SelectNextLoginScreen();
+                e.Handled = SelectNextLoginScreen();
                 return;
             }
 
@@ -88,15 +88,16 @@ namespace EveSwitcher
             {
                 _windowHelper.SetActiveCharacter(newActiveCharacter);
                 _lastActiveCharacterForHotkey[hotkey] = newActiveCharacter;
+                e.Handled = true;
             }
         }
 
-        private void SelectNextLoginScreen()
+        private bool SelectNextLoginScreen()
         {
             var activeLoginScreens = _windowHelper.GetActiveLoginScreens();
 
             if (!activeLoginScreens.Any())
-                return;
+                return false;
 
             IntPtr newActiveLoginScreen;
 
@@ -116,6 +117,8 @@ namespace EveSwitcher
 
             _windowHelper.SetActiveLoginScreen(newActiveLoginScreen);
             _lastActiveLoginScreen = newActiveLoginScreen;
+
+            return true;
         }
 
         protected override void OnExit(ExitEventArgs e)

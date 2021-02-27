@@ -13,6 +13,7 @@ namespace EveSwitcher
     public class HotkeyEventArgs : EventArgs
     {
         public KeyGesture Gesture { get; }
+        public bool Handled { get; set; }
 
         public HotkeyEventArgs(KeyGesture gesture)
         {
@@ -128,7 +129,7 @@ namespace EveSwitcher
                     {
                         var keyEventArgs = new HotkeyEventArgs(hotkey.Gesture);
                         HotkeyPressed?.Invoke(this, keyEventArgs);
-                        handled = true;
+                        handled = keyEventArgs.Handled;
                     }
                 }
             }
