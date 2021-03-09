@@ -92,7 +92,7 @@ namespace EveSwitcher
 
             if (result)
             {
-                _registeredHotkeys.Add(new RegisteredHotKey { Id = id, Gesture = gesture });
+                _registeredHotkeys.Add(new RegisteredHotKey { Id = id, Gesture = gesture, Modifiers = fsModifiers, VirtualKey = (uint)vk });
             }
 
             return result;
@@ -130,6 +130,13 @@ namespace EveSwitcher
                         var keyEventArgs = new HotkeyEventArgs(hotkey.Gesture);
                         HotkeyPressed?.Invoke(this, keyEventArgs);
                         handled = keyEventArgs.Handled;
+                    }
+
+                    if (!handled)
+                    {
+                        HotkeyNativeMethods.UnregisterHotKey(_handle, hotkey.Id);
+                        KeyboardMessage.Send(hotkey.Gesture);
+                        HotkeyNativeMethods.RegisterHotKey(_handle, hotkey.Id, hotkey.Modifiers, hotkey.VirtualKey);
                     }
                 }
             }
@@ -171,6 +178,8 @@ namespace EveSwitcher
         {
             public int Id { get; set; }
             public KeyGesture Gesture { get; set; }
+            public uint Modifiers { get; set; }
+            public uint VirtualKey { get; set; }
         }
 
         private static class HotkeyNativeMethods
