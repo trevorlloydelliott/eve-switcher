@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -8,6 +8,13 @@ namespace EveSwitcher
     public class WindowHelper
     {
         private const string EVETitlePrefix = "EVE - ";
+        private readonly ProcessProvider _processProvider;
+
+        public WindowHelper()
+        {
+            _processProvider = new ProcessProvider();
+            _processProvider.Start();
+        }
 
         public string GetActiveCharacter()
         {
@@ -44,7 +51,7 @@ namespace EveSwitcher
 
         public IntPtr[] GetActiveLoginScreens()
         {
-            var processes = Process.GetProcessesByName("exefile").Where(x => x.MainWindowTitle == "EVE");
+            var processes = _processProvider.GetProcessesByName("exefile").Where(x => x.MainWindowTitle == "EVE");
             var hwnds = processes.Select(x => x.MainWindowHandle).ToArray();
             return hwnds;
         }
@@ -64,12 +71,12 @@ namespace EveSwitcher
         {
             var hwnd = ProcessNativeMethods.GetForegroundWindow();
             ProcessNativeMethods.GetWindowThreadProcessId(hwnd, out uint processId);
-            return Process.GetProcessById((int)processId);
+            return _processProvider.GetProcessById((int)processId);
         }
 
         private Process GetProcessForCharacter(string character)
         {
-            return Process.GetProcessesByName("exefile").FirstOrDefault(x => x.MainWindowTitle == $"{EVETitlePrefix}{character}");
+            return _processProvider.GetProcessesByName("exefile").FirstOrDefault(x => x.MainWindowTitle == $"{EVETitlePrefix}{character}");
         }
 
         static class ProcessNativeMethods
