@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using System.Windows.Threading;
 
 namespace EveSwitcher
 {
     public class ProcessProvider
     {
-        private readonly DispatcherTimer _timer;
+        private readonly Timer _timer;
         private Process[] _processes;
 
         public ProcessProvider()
         {
-            _timer = new DispatcherTimer
+            _timer = new Timer
             {
-                Interval = TimeSpan.FromMilliseconds(500)
+                Interval = 500,
             };
-            _timer.Tick += Timer_Tick;
+            _timer.Elapsed += Timer_Elapsed;
         }
 
         public void Start()
@@ -41,7 +42,7 @@ namespace EveSwitcher
             return _processes.FirstOrDefault(x => x.Id == id);
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Timer_Elapsed(object sender, EventArgs e)
         {
             _processes = Process.GetProcesses();
         }
