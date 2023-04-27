@@ -20,6 +20,9 @@ namespace EveSwitcher
         {
             var process = GetActiveWindowProcess();
 
+            if (process == null)
+                return null;
+
             var title = process.MainWindowTitle;
 
             if (!title.StartsWith(EVETitlePrefix))
@@ -51,7 +54,7 @@ namespace EveSwitcher
 
         public IntPtr[] GetActiveLoginScreens()
         {
-            var processes = _processProvider.GetProcessesByName("exefile").Where(x => x.MainWindowTitle == "EVE");
+            var processes = _processProvider.GetProcesses().Where(x => x.MainWindowTitle == "EVE");
             var hwnds = processes.Select(x => x.MainWindowHandle).ToArray();
             return hwnds;
         }
@@ -64,7 +67,7 @@ namespace EveSwitcher
         public bool IsEveClientActive()
         {
             var process = GetActiveWindowProcess();
-            return process.ProcessName == "exefile";
+            return process?.ProcessName == "exefile";
         }
 
         private Process GetActiveWindowProcess()
@@ -76,7 +79,7 @@ namespace EveSwitcher
 
         private Process GetProcessForCharacter(string character)
         {
-            return _processProvider.GetProcessesByName("exefile").FirstOrDefault(x => x.MainWindowTitle == $"{EVETitlePrefix}{character}");
+            return _processProvider.GetProcesses().FirstOrDefault(x => x.MainWindowTitle == $"{EVETitlePrefix}{character}");
         }
 
         static class ProcessNativeMethods

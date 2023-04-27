@@ -17,7 +17,7 @@ namespace EveSwitcher
         {
             _timer = new Timer
             {
-                Interval = 500,
+                Interval = 1000,
             };
             _timer.Elapsed += Timer_Elapsed;
         }
@@ -32,9 +32,9 @@ namespace EveSwitcher
             _timer.Stop();
         }
 
-        public Process[] GetProcessesByName(string name)
+        public Process[] GetProcesses()
         {
-            return _processes.Where(x => x.ProcessName == name).ToArray();            
+            return _processes;
         }
 
         public Process GetProcessById(int id)
@@ -44,7 +44,7 @@ namespace EveSwitcher
 
         private void Timer_Elapsed(object sender, EventArgs e)
         {
-            _processes = Process.GetProcesses();
+            _processes = Process.GetProcessesByName("exefile");
         }
     }
 }
